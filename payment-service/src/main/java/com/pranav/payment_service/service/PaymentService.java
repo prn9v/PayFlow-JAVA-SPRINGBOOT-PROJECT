@@ -41,7 +41,7 @@ public class PaymentService {
     private final ObjectMapper           objectMapper;
     private final RazorpayService        razorpayService;
     private final CircuitBreakerService circuitBreakerService;
-    private final PaymentIndexService paymentIndexService;
+//    private final PaymentIndexService paymentIndexService;
 
     @Value("${razorpay.key-id}")
     private String razorpayKeyId;
@@ -120,7 +120,7 @@ public class PaymentService {
                 .build();
 
         paymentRepository.save(payment);
-        paymentIndexService.indexPayment(payment);
+//        paymentIndexService.indexPayment(payment);
         savePaymentEvent(payment.getId(), "PAYMENT_CREATED", payment);
 
         // 5. Publish Kafka event
@@ -212,7 +212,7 @@ public class PaymentService {
         payment.setStatus(PaymentStatus.SUCCESS);
         payment.setRazorpayPaymentId(razorpayPaymentId);
         paymentRepository.save(payment);
-        paymentIndexService.indexPayment(payment);
+//        paymentIndexService.indexPayment(payment);
 
         savePaymentEvent(payment.getId(), "PAYMENT_CAPTURED", payment);
 
@@ -253,7 +253,7 @@ public class PaymentService {
 
         payment.setStatus(PaymentStatus.FAILED);
         paymentRepository.save(payment);
-        paymentIndexService.indexPayment(payment);
+//        paymentIndexService.indexPayment(payment);
         savePaymentEvent(payment.getId(), "PAYMENT_FAILED", payment);
 
         eventProducer.publishPaymentFailed(
@@ -309,7 +309,7 @@ public class PaymentService {
 
         payment.setStatus(PaymentStatus.CANCELLED);
         paymentRepository.save(payment);
-        paymentIndexService.indexPayment(payment);
+//        paymentIndexService.indexPayment(payment);
         savePaymentEvent(paymentId, "PAYMENT_CANCELLED", payment);
 
         eventProducer.publishPaymentFailed(
