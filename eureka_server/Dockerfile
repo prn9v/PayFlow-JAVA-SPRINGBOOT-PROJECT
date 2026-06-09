@@ -8,15 +8,19 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests
 
+# ── List what was built (helpful for debugging) ───────────────────────────
+RUN echo "=== Built jars ===" && ls /app/target/*.jar
+
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
-COPY --from=build /app/target/discovery-service-0.0.1-SNAPSHOT.jar app.jar
+# ── Copy using wildcard — works regardless of jar name ───────────────────
+COPY --from=build /app/target/*.jar app.jar
 
 RUN addgroup -S payflow && adduser -S payflow -G payflow
 USER payflow
 
 EXPOSE 8761
 
-ENTRYPOINT ["java","-Xmx256m","-Xms128m","-jar","app.jar"]
+ENTRYPOINT ["java", "-Xmx256m", "-Xms128m", "-jar", "app.jar"]
