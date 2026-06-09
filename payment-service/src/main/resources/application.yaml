@@ -1,0 +1,137 @@
+spring:
+  application:
+    name: payment-service
+
+  datasource:
+    url: jdbc:mysql://${USER_DB_HOST}:${USER_DB_PORT}/defaultdb?sslMode=REQUIRED
+    username: ${USER_DB_USERNAME}
+    password: ${USER_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    properties:
+      security.protocol: SSL
+      ssl.truststore.type: PEM
+      ssl.keystore.type: PEM
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+
+#  elasticsearch:
+#    uris: ${ELASTICSEARCH_URI:http://localhost:9200}
+#    connection-timeout: 5s
+#    socket-timeout: 10s
+
+server:
+  port: ${PAYMENT_PORT:8083}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+
+# Must match merchant-service internal.api-key exactly
+internal:
+  api-key: ${INTERNAL_API_KEY}
+
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID}       # Your Test Key ID
+  key-secret: ${RAZORPAY_KEY_SECRET}      # Your Test Key Secret
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET}
+
+kafka:
+  topics:
+    payment-created: payment-created
+    payment-success: payment-success
+    payment-failed: payment-failed
+    refund-created: refund-created
+
+
+resilience4j:
+
+  circuitbreaker:
+    instances:
+      merchantService:
+        # Open circuit after 50% failures in last 10 calls
+        failure-rate-threshold: 50
+        # Slow call threshold — calls taking > 3s count as failures
+        slow-call-duration-threshold: 3s
+        slow-call-rate-threshold: 50
+        # Minimum calls before circuit can open
+        minimum-number-of-calls: 5
+        # How long to stay OPEN before trying again
+        wait-duration-in-open-state: 30s
+        # How many calls to allow in HALF-OPEN state
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        # Register health indicator in actuator
+        register-health-indicator: true
+
+      razorpayService:
+        failure-rate-threshold: 50
+        slow-call-duration-threshold: 10s
+        slow-call-rate-threshold: 50
+        minimum-number-of-calls: 3
+        wait-duration-in-open-state: 60s
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 5
+        register-health-indicator: true
+
+  retry:
+    instances:
+      merchantService:
+        max-attempts: 3
+        wait-duration: 500ms
+        retry-exceptions:
+          - feign.RetryableException
+          - java.io.IOException
+
+      razorpayService:
+        max-attempts: 2
+        wait-duration: 1s
+        retry-exceptions:
+          - com.razorpay.RazorpayException
+
+  timelimiter:
+    instances:
+      merchantService:
+        timeout-duration: 5s
+      razorpayService:
+        timeout-duration: 15s
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  show-actuator-endpoints: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      health:
+        enabled: true
+  health:
+    circuitbreakers:
+      enabled: true

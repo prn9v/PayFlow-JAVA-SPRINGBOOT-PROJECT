@@ -1,0 +1,97 @@
+spring:
+  application:
+    name: auth-service
+
+  datasource:
+    url: ${USER_DB_HOST:jdbc:mysql://localhost:3306/payflow_auth_db}
+    username: ${USER_DB_USERNAME}
+    password: ${USER_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+    show-sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: email, profile
+            redirect-uri: ${GOOGLE_CLIENT_REDIRECT_URL}
+
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope: user:email, read:user
+            redirect-uri: ${GITHUB_CLIENT_REDIRECT_URL}
+
+  mail:
+    host: ${BREVO_SMTP_HOST}
+    port: ${BREVO_SMTP_PORT}
+    username: ${BREVO_SMTP_USERNAME}
+    password: ${BREVO_SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+      fetch-registry: true
+      register-with-eureka: true
+
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration: ${JWT_EXPIRATION}
+  refresh-expiration: 604800000
+
+# From email shown to customers
+notification:
+  from-email: ${NOTIFICATION_FROM_EMAIL}
+  from-name: ${NOTIFICATION_FROM_NAME}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  show-actuator-endpoints: false
+  default-produces-media-type: application/json
+
+oauth2:
+  redirect-uri: http://localhost:3000/oauth2/callback
+
+server:
+  port: ${AUTH_PORT:8081}
+
+management:
+  endpoint:
+    health:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
