@@ -3,11 +3,18 @@ spring:
     name: eureka-server
 
 eureka:
-  server:
-    enable-self-preservation: false
+  instance:
+    hostname: ${RENDER_EXTERNAL_HOSTNAME:localhost}
+    prefer-ip-address: false
   client:
-    fetch-registry: false
     register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 5000
 
 logging:
   level:
@@ -18,10 +25,10 @@ server:
   port: ${EUREKA_PORT:8761}
 
 management:
-  endpoint:
-    health:
-      enabled: true
   endpoints:
     web:
       exposure:
-        include: health
+        include: health, info
+  endpoint:
+    health:
+      enabled: true
