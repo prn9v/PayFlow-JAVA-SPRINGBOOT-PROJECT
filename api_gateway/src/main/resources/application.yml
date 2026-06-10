@@ -75,7 +75,7 @@ spring:
             - RewritePath=/notification-service/v3/api-docs,/v3/api-docs
 
 server:
-  port: ${GATEWAY_PORT}
+  port: ${GATEWAY_PORT:8080}
 
 eureka:
   client:
