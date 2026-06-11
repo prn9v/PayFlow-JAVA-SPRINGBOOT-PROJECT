@@ -14,61 +14,61 @@ spring:
 
       routes:
         - id: auth-service
-          uri:  ${AUTH_SERVICE_URL:http://localhost:8081}
+          uri: lb://auth-service
           predicates:
             - Path=/api/auth/**
 
         - id: merchant-service
-          uri: ${MERCHANT_SERVICE_URL:http://localhost:8082}
+          uri: lb://merchant-service
           predicates:
             - Path=/api/merchants/**
 
         - id: payment-service
-          uri: ${PAYMENT_SERVICE_URL:http://localhost:8083}
+          uri: lb://payment-service
           predicates:
             - Path=/api/payments/**, /api/refunds/**
 
         - id: wallet-service
-          uri: ${WALLET_SERVICE_URL:http://localhost:8085}
+          uri: lb://wallet-service
           predicates:
             - Path=/api/wallets/**
 
         - id: notification-service
-          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:8084}
+          uri: $lb://notification-service
           predicates:
             - Path=/api/notifications/**
 
         # ── Swagger routes — forward api-docs requests to each service ──────
         - id: auth-service-docs
-          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          uri: lb://auth-service
           predicates:
             - Path=/auth-service/v3/api-docs
           filters:
             - RewritePath=/auth-service/v3/api-docs,/v3/api-docs
 
         - id: merchant-service-docs
-          uri: ${MERCHANT_SERVICE_URL:http://localhost:8082}
+          uri: lb://merchant-service
           predicates:
             - Path=/merchant-service/v3/api-docs
           filters:
             - RewritePath=/merchant-service/v3/api-docs,/v3/api-docs
 
         - id: payment-service-docs
-          uri: ${PAYMENT_SERVICE_URL:http://localhost:8083}
+          uri: lb://payment-service
           predicates:
             - Path=/payment-service/v3/api-docs
           filters:
             - RewritePath=/payment-service/v3/api-docs,/v3/api-docs
 
         - id: wallet-service-docs
-          uri: ${WALLET_SERVICE_URL:http://localhost:8085}
+          uri: lb://wallet-service
           predicates:
             - Path=/wallet-service/v3/api-docs
           filters:
             - RewritePath=/wallet-service/v3/api-docs,/v3/api-docs
 
         - id: notification-service-docs
-          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:8084}
+          uri: lb://notification-service
           predicates:
             - Path=/notification-service/v3/api-docs
           filters:
