@@ -53,7 +53,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: {EUREKA_URL:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
     fetch-registry: true
     register-with-eureka: true
   instance:
