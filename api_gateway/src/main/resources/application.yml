@@ -34,7 +34,7 @@ spring:
             - Path=/api/wallets/**
 
         - id: notification-service
-          uri: $lb://notification-service
+          uri: lb://notification-service
           predicates:
             - Path=/api/notifications/**
 
