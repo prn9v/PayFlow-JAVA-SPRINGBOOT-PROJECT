@@ -17,8 +17,9 @@ EXPOSE 8084
 
 ENTRYPOINT ["java", \
   "-Xms64m", \
-  "-Xmx256m", \
-  "-XX:MaxMetaspaceSize=96m", \
+  "-Xmx200m", \
+  "-XX:MaxMetaspaceSize=120m", \
+  "-XX:ReservedCodeCacheSize=64m", \
   "-XX:+UseSerialGC", \
   "-XX:+ExitOnOutOfMemoryError", \
   "-XX:+HeapDumpOnOutOfMemoryError", \

@@ -46,13 +46,12 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
-      fetch-min-size: 1
-      max-poll-records: 10          # Move here (Spring Boot maps this directly)
-      fetch-max-bytes: 1048576
+      max-poll-records: 10
       properties:
         spring.json.trusted.packages: "com.pranav.notification_service.kafka.event"
         spring.json.use.type.headers: false
-        max.partition.fetch.bytes: 1048576
+        fetch.max.bytes: 1048576
+        max.partition.fetch.bytes: 524288
 
     listener:
       concurrency: 1
