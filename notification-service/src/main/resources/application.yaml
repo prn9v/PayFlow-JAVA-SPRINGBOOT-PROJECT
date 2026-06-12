@@ -40,6 +40,7 @@ spring:
       ssl.keystore.type: PEM
       receive.buffer.bytes: 65536
       send.buffer.bytes: 65536
+
     consumer:
       group-id: notification-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -52,9 +53,9 @@ spring:
         max.poll.records: 10
         fetch.max.bytes: 1048576          # 1MB instead of default 50MB
         max.partition.fetch.bytes: 1048576
-      listener:
-        concurrency: 1
 
+    listener:
+      concurrency: 1
 server:
   port: ${NOTIFICATION_PORT:8084}
 
