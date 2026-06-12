@@ -11,4 +11,9 @@ COPY --from=build /app/target/*.jar app.jar
 RUN addgroup -S payflow && adduser -S payflow -G payflow
 USER payflow
 EXPOSE 8084
-ENTRYPOINT ["java", "-Xmx256m", "-Xms128m", "-jar", "app.jar"]
+ENTRYPOINT ["java", \
+  "-Xmx400m", \
+  "-Xms200m", \
+  "-XX:MaxMetaspaceSize=128m", \
+  "-XX:+UseSerialGC", \
+  "-jar", "app.jar"]

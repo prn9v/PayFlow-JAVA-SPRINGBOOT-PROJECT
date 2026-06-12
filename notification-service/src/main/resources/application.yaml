@@ -38,14 +38,22 @@ spring:
       security.protocol: SSL
       ssl.truststore.type: PEM
       ssl.keystore.type: PEM
+      receive.buffer.bytes: 65536
+      send.buffer.bytes: 65536
     consumer:
       group-id: notification-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
+      fetch-min-size: 1
       properties:
         spring.json.trusted.packages: "com.pranav.notification_service.kafka.event"
         spring.json.use.type.headers: false
+        max.poll.records: 10
+        fetch.max.bytes: 1048576          # 1MB instead of default 50MB
+        max.partition.fetch.bytes: 1048576
+      listener:
+        concurrency: 1
 
 server:
   port: ${NOTIFICATION_PORT:8084}
