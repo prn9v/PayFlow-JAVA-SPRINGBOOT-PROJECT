@@ -7,13 +7,20 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
+
 COPY --from=build /app/target/*.jar app.jar
+
 RUN addgroup -S payflow && adduser -S payflow -G payflow
 USER payflow
+
 EXPOSE 8084
+
 ENTRYPOINT ["java", \
-  "-Xmx400m", \
-  "-Xms200m", \
-  "-XX:MaxMetaspaceSize=128m", \
+  "-Xms64m", \
+  "-Xmx256m", \
+  "-XX:MaxMetaspaceSize=96m", \
   "-XX:+UseSerialGC", \
+  "-XX:+ExitOnOutOfMemoryError", \
+  "-XX:+HeapDumpOnOutOfMemoryError", \
+  "-XX:HeapDumpPath=/tmp/heapdump.hprof", \
   "-jar", "app.jar"]

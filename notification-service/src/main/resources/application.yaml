@@ -47,15 +47,17 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
       fetch-min-size: 1
+      max-poll-records: 10          # Move here (Spring Boot maps this directly)
+      fetch-max-bytes: 1048576
       properties:
         spring.json.trusted.packages: "com.pranav.notification_service.kafka.event"
         spring.json.use.type.headers: false
-        max.poll.records: 10
-        fetch.max.bytes: 1048576          # 1MB instead of default 50MB
         max.partition.fetch.bytes: 1048576
 
     listener:
       concurrency: 1
+      auto-startup: true
+
 server:
   port: ${NOTIFICATION_PORT:8084}
 
@@ -68,6 +70,8 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
 
 internal:
   api-key: ${INTERNAL_API_KEY}
