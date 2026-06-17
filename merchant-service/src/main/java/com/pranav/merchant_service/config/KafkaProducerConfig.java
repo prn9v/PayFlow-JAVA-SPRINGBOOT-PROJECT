@@ -32,16 +32,16 @@ public class KafkaProducerConfig {
         config.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 3000);
 
 //        // ── Aiven SSL config ──────────────────────────────────────────
-//        config.put("security.protocol", "SSL");
-//        config.put("ssl.truststore.type", "PEM");
-//        config.put("ssl.keystore.type",   "PEM");
-//        // Certificates from environment variables
-//        config.put("ssl.ca.location",
-//                System.getenv("KAFKA_CA_CERT_PATH"));
-//        config.put("ssl.certificate.location",
-//                System.getenv("KAFKA_ACCESS_CERT_PATH"));
-//        config.put("ssl.key.location",
-//                System.getenv("KAFKA_ACCESS_KEY_PATH"));
+        config.put("security.protocol", "SSL");
+        config.put("ssl.truststore.type", "PEM");
+        config.put("ssl.keystore.type",   "PEM");
+        // Certificates from environment variables
+        config.put("ssl.ca.location",
+                System.getenv("KAFKA_CA_CERT_PATH"));
+        config.put("ssl.certificate.location",
+                System.getenv("KAFKA_ACCESS_CERT_PATH"));
+        config.put("ssl.key.location",
+                System.getenv("KAFKA_ACCESS_KEY_PATH"));
 
         return new DefaultKafkaProducerFactory<>(config);
     }
