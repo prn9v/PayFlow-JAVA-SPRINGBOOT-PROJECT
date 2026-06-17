@@ -1,7 +1,10 @@
 package com.pranav.auth_service.controller;
 
 import com.pranav.auth_service.dto.*;
+import com.pranav.auth_service.entity.User;
+import com.pranav.auth_service.security.JwtService;
 import com.pranav.auth_service.service.AuthenticationService;
+import com.pranav.auth_service.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,7 +17,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -28,6 +33,8 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthenticationService authenticationService;
+    private final JwtService jwtService;
+    private final UserService userService;
 
     @Value("${jwt.expiration:86400000}")
     private long jwtExpiration;
@@ -147,17 +154,22 @@ public class AuthController {
                     description  = "Invalid credentials")
     })
     @GetMapping("/me")
-    public ResponseEntity<Map<String, String>> me(
-            HttpServletRequest request) {
+    public ResponseEntity<?> me(HttpServletRequest request) {
 
-        // Read token from cookie
         String token = extractTokenFromCookie(request);
+
         if (token == null) {
-            return ResponseEntity.status(401)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Not authenticated"));
         }
+
+        String email = jwtService.extractUsername(token);
+
+        User user = userService.getUserByEmail(email);
+
         return ResponseEntity.ok(
-                Map.of("message", "Authenticated"));
+                UserDto.from(user)
+        );
     }
 
     // ─── Cookie Helpers ───────────────────────────────────────────────────────
@@ -188,9 +200,7 @@ public class AuthController {
         return COOKIE_NAME + "=" + token + "; " +
                 "Max-Age=" + (jwtExpiration / 1000) + "; " +
                 "Path=/; " +
-                "HttpOnly; " +
-                "SameSite=None; " +
-                "Secure";
+                "HttpOnly; ";
     }
 
     private String extractTokenFromCookie(HttpServletRequest request) {

@@ -60,7 +60,7 @@ public class MerchantService {
     }
 
     // ─── Read ─────────────────────────────────────────────────────────────────
-
+    @Cacheable(value = "merchants", key = "#merchantId")
     public MerchantResponse getMerchantById(Long merchantId) {
         return toResponse(findById(merchantId));
     }
@@ -158,7 +158,6 @@ public class MerchantService {
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
-    @Cacheable(value = "merchants", key = "#merchantId")
     public Merchant findById(Long merchantId) {
         return merchantRepository.findById(merchantId)
                 .orElseThrow(() -> new MerchantNotFoundException(

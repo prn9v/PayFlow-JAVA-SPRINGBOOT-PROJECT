@@ -1,5 +1,6 @@
 package com.pranav.merchant_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pranav.merchant_service.enums.MerchantStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -68,9 +69,11 @@ public class Merchant {
     @Column(name = "kyc_verified", nullable = false)
     private Boolean kycVerified = false;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 

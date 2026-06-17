@@ -3,7 +3,7 @@ spring:
     name: auth-service
 
   datasource:
-    url: jdbc:mysql://${USER_DB_HOST}:${USER_DB_PORT}/${USER_DB_NAME}?useSSL=true&requireSSL=true&verifyServerCertificate=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${USER_DB_HOST:payflow-pranavdeshmukh5454-95ff.h.aivencloud.com}:${USER_DB_PORT:21782}/${USER_DB_NAME:defaultdb}?useSSL=true&requireSSL=true&verifyServerCertificate=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${USER_DB_USERNAME}
     password: ${USER_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -17,9 +17,9 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
   mail:
-    host: ${BREVO_SMTP_HOST}
-    port: ${BREVO_SMTP_PORT}
-    username: ${BREVO_SMTP_USERNAME}
+    host: ${BREVO_SMTP_HOST:smtp-relay.brevo.com}
+    port: ${BREVO_SMTP_PORT:587}
+    username: ${BREVO_SMTP_USERNAME:9f2083001@smtp-brevo.com}
     password: ${BREVO_SMTP_PASSWORD}
     properties:
       mail:
@@ -51,7 +51,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
 
     fetch-registry: true
     register-with-eureka: true
@@ -64,7 +64,7 @@ eureka:
 
 jwt:
   secret: ${JWT_SECRET}
-  access-expiration: ${JWT_EXPIRATION}
+  access-expiration: ${JWT_EXPIRATION:86400000}
   refresh-expiration: 604800000
 
 # From email shown to customers
@@ -74,19 +74,16 @@ notification:
 
 springdoc:
   api-docs:
-    path: /v3/api-docs
     enabled: true
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
-  show-actuator-endpoints: false
-  default-produces-media-type: application/json
 
 oauth2:
   redirect-uri: http://localhost:3000/oauth2/callback
 
 server:
   port: ${AUTH_PORT:8081}
+  forward-headers-strategy: framework
+
+swaggerURL: ${SWAGGER_URL:http://localhost:8080}
 
 management:
   endpoint:

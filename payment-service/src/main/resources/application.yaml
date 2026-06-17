@@ -3,7 +3,7 @@ spring:
     name: payment-service
 
   datasource:
-    url: jdbc:mysql://${USER_DB_HOST}:${USER_DB_PORT}/${USER_DB_NAME}?useSSL=true&requireSSL=true&verifyServerCertificate=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${USER_DB_HOST:payflow-pranavdeshmukh5454-95ff.h.aivencloud.com}:${USER_DB_PORT:21782}/${USER_DB_NAME:defaultdb}?useSSL=true&requireSSL=true&verifyServerCertificate=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${USER_DB_USERNAME}
     password: ${USER_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -35,11 +35,12 @@ spring:
 
 server:
   port: ${PAYMENT_PORT:8083}
+  forward-headers-strategy: framework
 
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
       fetch-registry: true
       register-with-eureka: true
   instance:
@@ -48,7 +49,7 @@ eureka:
 
 # Must match merchant-service internal.api-key exactly
 internal:
-  api-key: ${INTERNAL_API_KEY}
+  api-key: ${INTERNAL_API_KEY:PranavDeshmukh}
 
 razorpay:
   key-id: ${RAZORPAY_KEY_ID}       # Your Test Key ID
@@ -124,6 +125,9 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
   show-actuator-endpoints: false
+
+
+swaggerURL: ${SWAGGER_URL:http://localhost:8080}
 
 management:
   endpoints:

@@ -1,5 +1,6 @@
 package com.pranav.merchant_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -57,6 +58,7 @@ public class BankAccount {
     @Column(name = "verified", nullable = false)
     private Boolean verified = false;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
