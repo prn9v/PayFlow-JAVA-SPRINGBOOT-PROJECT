@@ -31,6 +31,7 @@ spring:
           max-active: 8
           max-idle: 8
           min-idle: 0
+      connect-timeout: 2000ms  
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
