@@ -7,15 +7,14 @@ import com.pranav.merchant_service.entity.Merchant;
 import com.pranav.merchant_service.enums.MerchantStatus;
 import com.pranav.merchant_service.exception.MerchantAlreadyExistsException;
 import com.pranav.merchant_service.exception.MerchantNotFoundException;
-import com.pranav.merchant_service.kafka.event.MerchantActivatedEvent;
-import com.pranav.merchant_service.kafka.producer.MerchantEventProducer;
+import com.pranav.merchant_service.rabbitmq.event.MerchantActivatedEvent;
+import com.pranav.merchant_service.rabbitmq.producer.MerchantEventProducer;
 import com.pranav.merchant_service.repository.MerchantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 
 
 @Service

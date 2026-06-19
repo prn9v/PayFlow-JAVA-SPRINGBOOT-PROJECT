@@ -31,21 +31,21 @@ spring:
       timeout: 2000ms
       connect-timeout: 2000ms 
 
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
-    properties:
-      security.protocol: SSL
-      ssl.truststore.type: PEM
-      ssl.keystore.type: PEM
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      properties:
-        spring.json.add.type.headers: false
+  rabbitmq:
+    addresses: ${RABBITMQ_URL}
+    connection-timeout: 5000
+    requested-heartbeat: 30
+    listener:
+      simple:
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-attempts: 3
+          multiplier: 2.0
 
-kafka:
-  topics:
-    merchant-activated: merchant-activated
 
 server:
   port: ${MERCHANT_PORT:8082}
@@ -77,7 +77,8 @@ cache:
 management:
   endpoint:
     health:
-      enabled: true
+      show-details: always
+
   endpoints:
     web:
       exposure:

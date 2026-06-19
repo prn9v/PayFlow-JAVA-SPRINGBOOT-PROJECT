@@ -10,6 +10,7 @@ import com.pranav.notification_service.enums.NotificationType;
 import com.pranav.notification_service.enums.ReferenceType;
 import com.pranav.notification_service.exception.NotificationNotFoundException;
 import com.pranav.notification_service.exception.TemplateNotFoundException;
+import com.pranav.notification_service.rabbitmq.event.*;
 import com.pranav.notification_service.repository.NotificationRepository;
 import com.pranav.notification_service.repository.NotificationTemplateRepository;
 import lombok.RequiredArgsConstructor;
@@ -149,6 +150,67 @@ public class NotificationService {
                         .build()
         );
         sendAndUpdateStatus(notification, recipientEmail, subject, message);
+    }
+
+    // ─── RabbitMQ Event Handlers ──────────────────────────────────────────────────
+
+    public void sendPaymentCreatedEmail(PaymentCreatedEvent event) {
+        sendFromTemplate(
+                "PAYMENT_CREATED",
+                event.getCustomerEmail(),
+                event.getPaymentId().toString(),
+                ReferenceType.PAYMENT,
+                Map.of(
+                        "customerName",      event.getCustomerName(),
+                        "paymentReference",  event.getPaymentReference(),
+                        "amount",            String.valueOf(event.getAmount()),
+                        "currency",          event.getCurrency()
+                )
+        );
+    }
+
+    public void sendPaymentSuccessEmail(PaymentSuccessEvent event) {
+        sendFromTemplate(
+                "PAYMENT_SUCCESS",
+                event.getCustomerEmail(),
+                event.getPaymentId().toString(),
+                ReferenceType.PAYMENT,
+                Map.of(
+                        "paymentReference",  event.getPaymentReference(),
+                        "amount",            String.valueOf(event.getAmount()),
+                        "currency",          event.getCurrency()
+                )
+        );
+    }
+
+    public void sendPaymentFailedEmail(PaymentFailedEvent event) {
+        sendFromTemplate(
+                "PAYMENT_FAILED",
+                event.getCustomerEmail(),
+                event.getPaymentId().toString(),
+                ReferenceType.PAYMENT,
+                Map.of(
+                        "paymentReference",  event.getPaymentReference(),
+                        "amount",            String.valueOf(event.getAmount()),
+                        "reason",            event.getReason() != null
+                                ? event.getReason() : "Unknown"
+                )
+        );
+    }
+
+    public void sendRefundCreatedEmail(RefundCreatedEvent event) {
+        sendFromTemplate(
+                "REFUND_CREATED",
+                event.getCustomerEmail(),
+                event.getRefundId().toString(),
+                ReferenceType.REFUND,
+                Map.of(
+                        "paymentReference",  event.getRefundReference(),
+                        "amount",            String.valueOf(event.getAmount()),
+                        "reason",            event.getReason() != null
+                                ? event.getReason() : "No reason provided"
+                )
+        );
     }
 
     // ─── Private helpers ──────────────────────────────────────────────────────

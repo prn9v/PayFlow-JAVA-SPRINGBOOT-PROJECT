@@ -31,31 +31,20 @@ spring:
           timeout: 5000
           writetimeout: 5000
 
-  # ── Kafka Consumer ───────────────────────────────────────────────────────────
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
-    properties:
-      security.protocol: SSL
-      ssl.truststore.type: PEM
-      ssl.keystore.type: PEM
-      receive.buffer.bytes: 65536
-      send.buffer.bytes: 65536
-
-    consumer:
-      group-id: notification-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      auto-offset-reset: earliest
-      max-poll-records: 10
-      properties:
-        spring.json.trusted.packages: "com.pranav.notification_service.kafka.event"
-        spring.json.use.type.headers: false
-        fetch.max.bytes: 1048576
-        max.partition.fetch.bytes: 524288
-
+  rabbitmq:
+    addresses: ${RABBITMQ_URL}
+    connection-timeout: 5000
+    requested-heartbeat: 30
     listener:
-      concurrency: 1
-      auto-startup: true
+      simple:
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-attempts: 3
+          multiplier: 2.0
 
 server:
   port: ${NOTIFICATION_PORT:8084}

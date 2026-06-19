@@ -16,17 +16,20 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
-    properties:
-      security.protocol: SSL
-      ssl.truststore.type: PEM
-      ssl.keystore.type: PEM
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      properties:
-        spring.json.add.type.headers: false
+  rabbitmq:
+    addresses: ${RABBITMQ_URL}
+    connection-timeout: 5000
+    requested-heartbeat: 30
+    listener:
+      simple:
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
+        retry:
+          enabled: true
+          initial-interval: 1000ms
+          max-attempts: 3
+          multiplier: 2.0
 
 #  elasticsearch:
 #    uris: ${ELASTICSEARCH_URI:http://localhost:9200}
@@ -52,16 +55,9 @@ internal:
   api-key: ${INTERNAL_API_KEY:PranavDeshmukh}
 
 razorpay:
-  key-id: ${RAZORPAY_KEY_ID}       # Your Test Key ID
-  key-secret: ${RAZORPAY_KEY_SECRET}      # Your Test Key Secret
-  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET}
-
-kafka:
-  topics:
-    payment-created: payment-created
-    payment-success: payment-success
-    payment-failed: payment-failed
-    refund-created: refund-created
+  key-id: ${RAZORPAY_KEY_ID:rzp_test_SxwFzHNAMCcKCl}       # Your Test Key ID
+  key-secret: ${RAZORPAY_KEY_SECRET:Y4623T4QNoro7pALogSFU8MX}      # Your Test Key Secret
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:payflow_webhook_secret_123}
 
 
 resilience4j:
@@ -130,12 +126,11 @@ springdoc:
 swaggerURL: ${SWAGGER_URL:http://localhost:8080}
 
 management:
+  endpoint:
+    health:
+      show-details: always
+
   endpoints:
     web:
       exposure:
-        include: "*"
-      health:
-        enabled: true
-  health:
-    circuitbreakers:
-      enabled: true
+        include: health
