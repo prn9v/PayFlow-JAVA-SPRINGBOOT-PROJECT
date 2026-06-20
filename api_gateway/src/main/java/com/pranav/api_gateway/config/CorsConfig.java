@@ -6,6 +6,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -26,10 +27,13 @@ public class CorsConfig {
         // Allow all headers
         config.setAllowedHeaders(List.of("*"));
 
-        // Allow credentials
-        config.setAllowCredentials(false);
+        config.setExposedHeaders(Arrays.asList(
+                "Set-Cookie",
+                "Authorization"
+        ));
 
-        // Cache preflight for 1 hour
+        config.setAllowCredentials(true);
+
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source =

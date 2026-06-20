@@ -5,14 +5,14 @@ spring:
     gateway:
       x-forwarded:
         enabled: true
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOriginPatterns: "*"
-            allowedMethods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"]
-            allowedHeaders: "*"
-            allowCredentials: true       # ← true needed for cookies
-            maxAge: 3600
+#      globalcors:
+#        corsConfigurations:
+#          '[/**]':
+#            allowedOriginPatterns: "*"
+#            allowedMethods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"]
+#            allowedHeaders: "*"
+#            allowCredentials: true
+#            maxAge: 3600
 
       routes:
         - id: auth-service
