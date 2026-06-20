@@ -16,15 +16,17 @@ public class CorsConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Allow all origins including null (local HTML files)
-        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowedOriginPatterns(Arrays.asList(
+                "http://localhost:3000",
+                "http://localhost:3001",
+                "http://127.0.0.1:3000",
+                "https://*.vercel.app"
+        ));
 
-        // Allow all HTTP methods
-        config.setAllowedMethods(List.of(
+        config.setAllowedMethods(Arrays.asList(
                 "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
         ));
 
-        // Allow all headers
         config.setAllowedHeaders(List.of("*"));
 
         config.setExposedHeaders(Arrays.asList(
@@ -33,7 +35,6 @@ public class CorsConfig {
         ));
 
         config.setAllowCredentials(true);
-
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source =

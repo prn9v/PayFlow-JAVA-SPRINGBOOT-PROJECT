@@ -178,7 +178,7 @@ public class AuthController {
                                String token) {
         Cookie cookie = new Cookie(COOKIE_NAME, token);
         cookie.setHttpOnly(true);        // JS cannot read it
-        cookie.setSecure(false);         // set true in production (HTTPS)
+        cookie.setSecure(true);         // set true in production (HTTPS)
         cookie.setPath("/");             // available for all paths
         cookie.setMaxAge((int) (jwtExpiration / 1000)); // convert ms to seconds
         // SameSite=None needed for cross-origin (different domain frontend)
@@ -200,7 +200,9 @@ public class AuthController {
         return COOKIE_NAME + "=" + token + "; " +
                 "Max-Age=" + (jwtExpiration / 1000) + "; " +
                 "Path=/; " +
-                "HttpOnly; ";
+                "HttpOnly; " +
+                "SameSite=None; " +
+                "Secure";
     }
 
     private String extractTokenFromCookie(HttpServletRequest request) {
