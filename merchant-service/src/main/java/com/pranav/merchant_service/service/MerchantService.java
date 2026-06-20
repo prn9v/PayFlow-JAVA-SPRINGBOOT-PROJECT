@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 @Service
@@ -144,6 +146,33 @@ public class MerchantService {
         Merchant merchant = findById(merchantId);
         merchant.setStatus(MerchantStatus.REJECTED);
         return toResponse(merchantRepository.save(merchant));
+    }
+
+    public Page<MerchantResponse> getAllMerchants(Pageable pageable,
+                                                  String status,
+                                                  String search) {
+        Page<Merchant> merchants;
+
+        if (status != null && search != null) {
+            MerchantStatus merchantStatus = MerchantStatus.valueOf(status);
+            merchants = merchantRepository
+                    .findByStatusAndBusinessNameContainingIgnoreCase(
+                            merchantStatus, search, pageable);
+
+        } else if (status != null) {
+            MerchantStatus merchantStatus = MerchantStatus.valueOf(status);
+            merchants = merchantRepository
+                    .findByStatus(merchantStatus, pageable);
+
+        } else if (search != null) {
+            merchants = merchantRepository
+                    .findByBusinessNameContainingIgnoreCase(search, pageable);
+
+        } else {
+            merchants = merchantRepository.findAll(pageable);
+        }
+
+        return merchants.map(this::toResponse);
     }
 
 

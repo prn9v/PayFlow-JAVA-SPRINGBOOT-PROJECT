@@ -65,9 +65,9 @@ internal:
   api-key: ${INTERNAL_API_KEY:PranavDeshmukh}
 
 razorpay:
-  key-id: ${RAZORPAY_KEY_ID:rzp_test_SxwFzHNAMCcKCl}       # Your Test Key ID
-  key-secret: ${RAZORPAY_KEY_SECRET:Y4623T4QNoro7pALogSFU8MX}      # Your Test Key Secret
-  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:payflow_webhook_secret_123}
+  key-id: ${RAZORPAY_KEY_ID}       # Your Test Key ID
+  key-secret: ${RAZORPAY_KEY_SECRET}      # Your Test Key Secret
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET}
 
 
 resilience4j:

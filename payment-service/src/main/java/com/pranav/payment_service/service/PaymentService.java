@@ -23,6 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.pranav.payment_service.enums.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -284,7 +287,90 @@ public class PaymentService {
         log.info("Razorpay refund confirmed: {}", razorpayRefundId);
     }
 
+    @Transactional
+    public CreatePaymentResponse initiateExistingPayment(UUID paymentId,
+                                                         String customerEmail) {
+        Payment payment = findById(paymentId);
+
+        // Security: only the customer who owns this payment can initiate
+        if (!customerEmail.equals(payment.getCustomerEmail())) {
+            throw new InvalidPaymentStateException(
+                    "You are not authorized to pay this payment.");
+        }
+
+        if (payment.getStatus() != PaymentStatus.PENDING) {
+            throw new InvalidPaymentStateException(
+                    "Only PENDING payments can be initiated. Current: "
+                            + payment.getStatus());
+        }
+
+        // If Razorpay order already created, reuse it
+        // If not, create a new one
+        String razorpayOrderId = payment.getRazorpayOrderId();
+
+        if (razorpayOrderId == null || razorpayOrderId.isEmpty()) {
+            try {
+                razorpayOrderId = circuitBreakerService
+                        .createRazorpayOrderWithBreaker(
+                                payment.getAmount(),
+                                payment.getCurrency(),
+                                payment.getPaymentReference()
+                        );
+                payment.setRazorpayOrderId(razorpayOrderId);
+                paymentRepository.save(payment);
+            } catch (Exception e) {
+                log.error("Razorpay order creation failed: {}", e.getMessage());
+                throw new RuntimeException(
+                        "Payment gateway error. Please try again.");
+            }
+        }
+
+        return CreatePaymentResponse.builder()
+                .paymentId(payment.getId())
+                .paymentReference(payment.getPaymentReference())
+                .status(payment.getStatus().name())
+                .amount(payment.getAmount())
+                .currency(payment.getCurrency())
+                .razorpayOrderId(razorpayOrderId)
+                .razorpayKeyId(razorpayKeyId)
+                .amountInPaise(payment.getAmount()
+                        .multiply(BigDecimal.valueOf(100)))
+                .build();
+    }
+
+    // All payments — admin only, with pagination
+    public Page<PaymentResponse> getAllPayments(Pageable pageable,
+                                                String status,
+                                                String search) {
+        Page<Payment> payments;
+
+        if (status != null && search != null) {
+            PaymentStatus paymentStatus = PaymentStatus.valueOf(status);
+            payments = paymentRepository
+                    .findByStatusAndCustomerEmailContainingIgnoreCase(
+                            paymentStatus, search, pageable);
+
+        } else if (status != null) {
+            PaymentStatus paymentStatus = PaymentStatus.valueOf(status);
+            payments = paymentRepository
+                    .findByStatus(paymentStatus, pageable);
+
+        } else if (search != null) {
+            payments = paymentRepository
+                    .findByCustomerEmailContainingIgnoreCase(search, pageable);
+
+        } else {
+            payments = paymentRepository.findAll(pageable);
+        }
+
+        return payments.map(this::toResponse);
+    }
+
     // ─── Get Payment ──────────────────────────────────────────────────────────
+    public List<PaymentResponse> getPaymentsByCustomerEmail(String email) {
+        return paymentRepository.findByCustomerEmail(email)
+                .stream().map(this::toResponse).toList();
+    }
 
     public PaymentResponse getPayment(UUID paymentId) {
         return toResponse(findById(paymentId));
