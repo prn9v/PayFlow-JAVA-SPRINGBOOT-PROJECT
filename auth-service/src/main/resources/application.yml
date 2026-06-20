@@ -86,7 +86,7 @@ oauth2:
   redirect-uri: http://localhost:3000/oauth2/callback
 
 server:
-  port: ${AUTH_PORT:8081}
+  port: ${PORT:8081}
   forward-headers-strategy: framework
 
 swaggerURL: ${SWAGGER_URL:http://localhost:8080}
