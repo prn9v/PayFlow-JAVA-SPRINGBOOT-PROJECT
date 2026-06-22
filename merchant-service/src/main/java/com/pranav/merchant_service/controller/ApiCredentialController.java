@@ -31,10 +31,10 @@ public class ApiCredentialController {
     private final ApiCredentialService apiCredentialService;
     private final MerchantService merchantService;
 
-    // POST /api/merchants/api-credentials?merchantId={merchantId}  [ADMIN]
+    // POST /api/merchants/api-credentials
     @Operation(
-            summary = "Generate API Credentials (Admin)",
-            description = "Admin generates new API credentials for a specific merchant (pass merchantId as query param)"
+            summary = "Generate API Credentials",
+            description = "Generates new API credentials for  merchant "
     )
     @ApiResponses({
             @ApiResponse(
@@ -49,9 +49,10 @@ public class ApiCredentialController {
             @ApiResponse(responseCode = "409", description = "Credentials already exist")
     })
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MERCHANT')")
     public ResponseEntity<ApiCredentialResponse> generateCredentials(
-            @RequestParam Long merchantId) {
+            Authentication authentication) {
+        Long merchantId = resolveMerchantId(authentication);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(apiCredentialService.generateCredentials(merchantId));
     }
