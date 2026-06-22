@@ -124,6 +124,12 @@ resilience4j:
       razorpayService:
         timeout-duration: 15s
 
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration: ${JWT_EXPIRATION:86400000}
+  refresh-expiration: 604800000
+
+
 springdoc:
   api-docs:
     enabled: true

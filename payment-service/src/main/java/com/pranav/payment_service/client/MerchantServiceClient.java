@@ -22,4 +22,7 @@ public interface MerchantServiceClient {
     @GetMapping("/internal/merchants/{merchantId}/validate")
     MerchantValidationResponse validateMerchant(
             @PathVariable("merchantId") Long merchantId);
+
+    @GetMapping("/internal/merchants/by-user/{userId}")
+    Long getMerchantIdByUserId(@PathVariable("userId") Long userId);
 }

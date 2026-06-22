@@ -78,6 +78,7 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
         return ResponseEntity
