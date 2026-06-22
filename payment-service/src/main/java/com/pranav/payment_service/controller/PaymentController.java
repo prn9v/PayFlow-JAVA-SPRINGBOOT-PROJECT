@@ -4,6 +4,7 @@ import com.pranav.payment_service.dto.request.CreatePaymentRequest;
 import com.pranav.payment_service.dto.response.CreatePaymentResponse;
 import com.pranav.payment_service.dto.response.MerchantResponse;
 import com.pranav.payment_service.dto.response.PaymentResponse;
+import com.pranav.payment_service.exception.UnauthorizedException;
 import com.pranav.payment_service.service.PaymentService;
 import com.pranav.payment_service.client.MerchantServiceClient;
 import jakarta.validation.Valid;
@@ -165,7 +166,9 @@ public class PaymentController {
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     private Long extractUserId(Authentication authentication) {
-        // userId stored as String in details by GatewayAuthenticationFilter
+        if (authentication == null || authentication.getDetails() == null) {
+            throw new UnauthorizedException("Not authenticated");
+        }
         return Long.parseLong((String) authentication.getDetails());
     }
 
