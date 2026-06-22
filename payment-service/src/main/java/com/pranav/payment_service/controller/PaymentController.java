@@ -167,7 +167,7 @@ public class PaymentController {
 
     private Long extractUserId(Authentication authentication) {
         if (authentication == null || authentication.getDetails() == null) {
-            throw new UnauthorizedException("Not authenticated");
+            throw new  UnauthorizedException("Not authenticated");
         }
         return Long.parseLong((String) authentication.getDetails());
     }

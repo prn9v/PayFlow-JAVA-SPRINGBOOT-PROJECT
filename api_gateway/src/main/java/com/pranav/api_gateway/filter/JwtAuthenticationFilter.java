@@ -36,7 +36,6 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             "/api/auth/resend-otp",
             "/api/auth/logout",
             "/api/payments/webhook",
-            "/api/payments",
             "/oauth2/",
             "/login/oauth2/",
             // ── Swagger paths ──────────────────────────────────────────────
