@@ -13,4 +13,6 @@ public interface RefundRepository extends JpaRepository<Refund, Long> {
     List<Refund> findByPaymentId(UUID paymentId);
 
     Optional<Refund> findByRefundReference(String refundReference);
+
+    List<Refund> findByMerchantIdOrderByCreatedAtDesc(Long merchantId);
 }
