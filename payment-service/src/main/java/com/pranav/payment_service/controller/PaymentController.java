@@ -2,6 +2,7 @@ package com.pranav.payment_service.controller;
 
 import com.pranav.payment_service.dto.request.CreatePaymentRequest;
 import com.pranav.payment_service.dto.response.CreatePaymentResponse;
+import com.pranav.payment_service.dto.response.MerchantResponse;
 import com.pranav.payment_service.dto.response.PaymentResponse;
 import com.pranav.payment_service.service.PaymentService;
 import com.pranav.payment_service.client.MerchantServiceClient;
@@ -164,12 +165,13 @@ public class PaymentController {
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     private Long extractUserId(Authentication authentication) {
+        // userId stored as String in details by GatewayAuthenticationFilter
         return Long.parseLong((String) authentication.getDetails());
     }
 
     private Long resolveMerchantId(Authentication authentication) {
         Long userId = extractUserId(authentication);
-        // Calls merchant-service to resolve merchantId from userId
-        return merchantServiceClient.getMerchantIdByUserId(userId);
+        MerchantResponse merchant = merchantServiceClient.getMerchantByUserId(userId);
+        return merchant.getMerchantId();
     }
 }

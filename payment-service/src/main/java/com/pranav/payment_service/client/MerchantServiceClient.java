@@ -3,12 +3,14 @@ package com.pranav.payment_service.client;
 
 import com.pranav.payment_service.config.FeignConfig;
 import com.pranav.payment_service.dto.request.ValidateCredentialRequest;
+import com.pranav.payment_service.dto.response.MerchantResponse;
 import com.pranav.payment_service.dto.response.MerchantValidationResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(
         name = "merchant-service",
+        url = "${merchant-service.url}",
         configuration = FeignConfig.class
 )
 public interface MerchantServiceClient {
@@ -23,6 +25,7 @@ public interface MerchantServiceClient {
     MerchantValidationResponse validateMerchant(
             @PathVariable("merchantId") Long merchantId);
 
-    @GetMapping("/internal/merchants/by-user/{userId}")
-    Long getMerchantIdByUserId(@PathVariable("userId") Long userId);
+    @GetMapping("/internal/merchants/user/{userId}")
+    MerchantResponse getMerchantByUserId(
+            @PathVariable Long userId);
 }

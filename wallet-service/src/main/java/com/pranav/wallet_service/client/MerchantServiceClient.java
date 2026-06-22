@@ -11,6 +11,7 @@ import java.util.Map;
 
 @FeignClient(
         name = "merchant-service",
+        url = "${merchant-service.url}",
         configuration = FeignConfig.class
 )
 public interface MerchantServiceClient {

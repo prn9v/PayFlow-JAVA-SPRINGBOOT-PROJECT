@@ -71,6 +71,9 @@ springdoc:
     path: /swagger-ui.html
   show-actuator-endpoints: false
 
+merchant-service:
+  url: ${MERCHANT_SERVICE_URL:https://payflow-merchant-service-ryfx.onrender.com}
+
 management:
   endpoint:
     health:

@@ -16,6 +16,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -46,6 +47,7 @@ public class CustomerPaymentController {
             @ApiResponse(responseCode = "401", description = "Unauthorized — not authenticated")
     })
     @GetMapping("/customer")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<List<PaymentResponse>> getCustomerPayments(
             HttpServletRequest request) {
         String email = extractEmailFromCookie(request);
@@ -68,6 +70,7 @@ public class CustomerPaymentController {
             @ApiResponse(responseCode = "404", description = "Payment not found")
     })
     @PostMapping("/initiate/{paymentId}")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<CreatePaymentResponse> initiatePayment(
             @PathVariable UUID paymentId,
             HttpServletRequest request) {

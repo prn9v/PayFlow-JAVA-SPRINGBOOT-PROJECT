@@ -29,7 +29,7 @@ public class GatewayAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // Internal and payment creation endpoints don't use JWT headers
-        if (path.startsWith("/internal/") || path.startsWith("/api/payments")) {
+        if (path.startsWith("/internal/") || path.startsWith("/api/payments/webhook")) {
             filterChain.doFilter(request, response);
             return;
         }
