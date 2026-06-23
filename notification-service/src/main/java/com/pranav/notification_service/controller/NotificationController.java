@@ -5,6 +5,7 @@ import com.pranav.notification_service.dto.response.NotificationResponse;
 import com.pranav.notification_service.service.NotificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -194,5 +195,32 @@ public class NotificationController {
     public ResponseEntity<NotificationResponse> sendManual(
             @Valid @RequestBody SendNotificationRequest request) {
         return ResponseEntity.ok(notificationService.sendManual(request));
+    }
+
+    // GET /api/notifications/admin/all
+    @Operation(
+            summary = "Get All Notifications (Admin)",
+            description = "Paginated list of all notifications with optional search and status filter"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Notifications fetched successfully"
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Access denied")
+    })
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<NotificationResponse>> getAllNotifications(
+            @RequestParam(defaultValue = "0")    int page,
+            @RequestParam(defaultValue = "10")   int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false)      String search,
+            @RequestParam(required = false)      String status) {
+
+        return ResponseEntity.ok(
+                notificationService.getAllAdmin(page, size, sortBy, sortDir, search, status));
     }
 }

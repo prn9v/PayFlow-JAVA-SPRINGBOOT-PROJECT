@@ -17,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -150,6 +153,35 @@ public class NotificationService {
                         .build()
         );
         sendAndUpdateStatus(notification, recipientEmail, subject, message);
+    }
+
+    public Page<NotificationResponse> getAllAdmin(int page,
+                                                  int size,
+                                                  String sortBy,
+                                                  String sortDir,
+                                                  String search,
+                                                  String status) {
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        PageRequest pageable = PageRequest.of(page, size, sort);
+
+        NotificationStatus statusEnum = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                statusEnum = NotificationStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException ignored) {
+                // invalid status string → treat as no filter
+            }
+        }
+
+        String searchParam = (search != null && !search.isBlank()) ? search.trim() : null;
+
+        return notificationRepository
+                .findAllWithFilters(searchParam, statusEnum, pageable)
+                .map(this::toResponse);
     }
 
     // ─── RabbitMQ Event Handlers ──────────────────────────────────────────────────
