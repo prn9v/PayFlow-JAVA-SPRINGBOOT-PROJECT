@@ -66,7 +66,14 @@ public class WalletService {
             return;
         }
 
-        Wallet wallet = findByMerchantId(merchantId);
+        Wallet wallet;
+        try {
+            wallet = findByMerchantId(merchantId);
+        } catch (WalletNotFoundException e) {
+            log.info("Wallet not found for merchant: {}. Creating one automatically.", merchantId);
+            createWallet(merchantId);
+            wallet = findByMerchantId(merchantId);
+        }
 
         BigDecimal balanceBefore = wallet.getAvailableBalance();
         BigDecimal balanceAfter  = balanceBefore.add(amount);
