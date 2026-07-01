@@ -142,22 +142,22 @@ All critical configurations are loaded from a root-level `.env` file. These valu
 # ── Databases ─────────────────────────────────────────────────────────────────
 USER_DB_HOST=payflow-pranavdeshmukh5454-95ff.h.aivencloud.com
 USER_DB_PORT=21782
-USER_DB_USERNAME=avnadmin
+USER_DB_USERNAME=********
 USER_DB_PASSWORD=********
 USER_DB_NAME=defaultdb
 
 # ── JWT Security ──────────────────────────────────────────────────────────────
-JWT_SECRET=8fd9c1f2b7a48c6e91d3f5a7b2c8e4f9a1d6c3e7f8b4a2d5c9e1f7a3b6d8e2
+JWT_SECRET=********
 JWT_EXPIRATION=86400000
 
 # ── Google & GitHub OAuth2 ───────────────────────────────────────────────────
-GOOGLE_CLIENT_ID=37364052819-qujhr1jeqvdl00tcftk9pjcgqjabbfpf.apps.googleusercontent.com
+GOOGLE_CLIENT_ID=********
 GOOGLE_CLIENT_SECRET=********
-GITHUB_CLIENT_ID=Ov23liL9LkV1PookL3s3
+GITHUB_CLIENT_ID=********
 GITHUB_CLIENT_SECRET=********
 
 # ── Inter-Service Authentication ─────────────────────────────────────────────
-INTERNAL_API_KEY=PranavDeshmukh
+INTERNAL_API_KEY=********
 
 # ── Redis Cache (Upstash) ────────────────────────────────────────────────────
 REDIS_HOST=rediss://default:********@key-treefrog-145301.upstash.io
@@ -167,14 +167,14 @@ REDIS_PORT=6379
 RABBITMQ_URL=amqps://lqpexrwc:********@beaver.rmq.cloudamqp.com/lqpexrwc
 
 # ── Razorpay Gateway Integrations ────────────────────────────────────────────
-RAZORPAY_KEY_ID=rzp_test_SxwFzHNAMCcKCl
+RAZORPAY_KEY_ID=********
 RAZORPAY_KEY_SECRET=********
-RAZORPAY_WEBHOOK_SECRET=payflow_webhook_secret_123
+RAZORPAY_WEBHOOK_SECRET=********
 
 # ── Email SMTP (Brevo) ────────────────────────────────────────────────────────
 BREVO_SMTP_HOST=smtp-relay.brevo.com
 BREVO_SMTP_PORT=587
-BREVO_SMTP_USERNAME=9f2083001@smtp-brevo.com
+BREVO_SMTP_USERNAME=********
 BREVO_SMTP_PASSWORD=********
 NOTIFICATION_FROM_EMAIL=pranavdeshmukh5454@gmail.com
 ```
